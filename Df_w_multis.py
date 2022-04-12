@@ -22,9 +22,8 @@ print(Df_A.info())
 print(Df_B.info())
 
 #Keys() and columns are the same in a dataframe. Try it
-print('Flat df keys()', Df_A.keys(),)
-print('MultiIndex df keys()', Df_B.keys(),)
-
+print('Flat df keys()', Df_A.keys(),Df_A.columns)
+print('MultiIndex df keys()', Df_B.keys(),Df_B.columns)
 #Notice that it doesn't consider an index to be a column anymore, even if it looks like it's a column when the df is printed.
 #The ONLY column in Df_B is 'rcp' because mouse, day, and trial are all indexes and pandas interprets them as if they are attached to the rows.
 
@@ -46,11 +45,28 @@ print('Mouse series','\n',mouse_series)
 #Instead, we can reference the indexes by using the df.index object.
 print(Df_B.index)
 
-#To get the unique
+#Df.index.levels gives you more information about the indexes:
+#It gives you a list of the unique values in each index, and the order of the lists corresponds to the level of the index.
+print(Df_B.index.levels)
+#So the mouse name is level 0, the day is level 2, the trial is level 3.
+#You can use df.index.names to get the names of an index ('mouse','day','trial') as a list
+print(Df_B.index.names)
+#You can use df.swaplevel(a,b) to swap two levels in the heirarchy. Try it:
+Df_C=Df_B.swaplevel(0,1)
 
-##TODO: Now I'm trying to show how in Df_B, 'mouse' isn't a column anymore so DfB['mouse'] doesn't work.
-#I want to show how you CAN make an equivalent series like what you get in mouse_series, and how you get info like the levels of various indexes.
+## Next up I want to talk about how to refer to data. .loc in particular is a pain if you don't know quite what it's doing.
+#In Df_A, whose only index is the autonumbering, .loc will only accept the row number as an argument and it will return the entire row as a series.
+print(Df_A.loc[5])
 
+#For a MI dataframe, you can use any of the indexes, but they have to be in order.
+slice1 = Df_B.loc['F1_PAFT'])
+slice2 = Df_B.loc['F1_PAFT','Mon',0:1])
+#What happens if you try them out of order? What if you skip a level? Try it in the console.
+#Note that you can only select more than one value for the lowest level.
+#Df_B.loc['F1_PAFT','Mon',0:1] is valid, but Df_B.loc['F1_PAFT':'M2_PAFT','Mon',0] is not.
+#For that, use the slice() function/method
+##TODO: HELP HELP I DON'T KNOW THE VOCAB FOR THESE THINGS ARE
+slice3 =Df_B.loc[(slice('F1_PAFT','M2_PAFT'),'Mon',0),:]
+##TODO: Also slice() treats a comma like it's a : and I don't understand
 
-
-c = Df_A.columns
+#Df_A[Df_A['mouse']=='F1_PAFT']

@@ -25,7 +25,8 @@ print(Df_B.info())
 print('Flat df keys()', Df_A.keys(),Df_A.columns)
 print('MultiIndex df keys()', Df_B.keys(),Df_B.columns)
 #Notice that it doesn't consider an index to be a column anymore, even if it looks like it's a column when the df is printed.
-#The ONLY column in Df_B is 'rcp' because mouse, day, and trial are all indexes and pandas interprets them as if they are attached to the rows.
+#The ONLY columns in Df_B are 'rcp', 'speed', and 'variance.'
+# Mouse, day, and trial are all indexes, and pandas interprets them as if they are on the rows.
 
 #Another way Pandas refers to columns and rows is as 'axes' like you'd have on a plot.
 #Axis 0 is the rows or the x axis, axis 1 is the columns or the y axis.
@@ -55,18 +56,32 @@ print(Df_B.index.names)
 Df_C=Df_B.swaplevel(0,1)
 
 ## Next up I want to talk about how to refer to data. .loc in particular is a pain if you don't know quite what it's doing.
+
+##SLICING BY ROWS:
 #In Df_A, whose only index is the autonumbering, .loc will only accept the row number as an argument and it will return the entire row as a series.
 print(Df_A.loc[5])
 
 #For a MI dataframe, you can use any of the indexes, but they have to be in order.
-slice1 = Df_B.loc['F1_PAFT'])
-slice2 = Df_B.loc['F1_PAFT','Mon',0:1])
+slice1 = Df_B.loc['F1_PAFT']
+slice2 = Df_B.loc['F1_PAFT','Mon',0:1]
 #What happens if you try them out of order? What if you skip a level? Try it in the console.
+
 #Note that you can only select more than one value for the lowest level.
 #Df_B.loc['F1_PAFT','Mon',0:1] is valid, but Df_B.loc['F1_PAFT':'M2_PAFT','Mon',0] is not.
-#For that, use the slice() function/method
-##TODO: HELP HELP I DON'T KNOW THE VOCAB FOR THESE THINGS ARE
-slice3 =Df_B.loc[(slice('F1_PAFT','M2_PAFT'),'Mon',0),:]
-##TODO: Also slice() treats a comma like it's a : and I don't understand
+#For that, use python's slice function. Options are slice(start,end, step).
+#To select everything, the syntax is slice(None)
+slice3 = Df_B.loc[(slice(None),'Mon',0),:]
 
-#Df_A[Df_A['mouse']=='F1_PAFT']
+##SLICING BY COLUMNS:
+#Selecting an entire column is easy in either dataframe.
+# For a df with no levels you can use df['column']. For a MI df, you can use that or df.loc[:,('column')
+Df_A_cols=Df_A[['mouse','day']]
+Df_B_cols1=Df_B[['rcp','speed']]
+Df_B_cols2=Df_B.loc[:,['rcp','speed']]
+
+#There are several ways of selecting specific values from a column. Nested criteria works the same on flat or hierarchical dfs:
+Df_A_slow = Df_A[Df_A['speed']=='Low']
+Df_B_slow = Df_B[Df_B['speed']=='Low']
+
+##TODO: Ok I think now is where I can talk about query, xs, where, and all that stuff.
+#Then I can go over stacking and unstacking.

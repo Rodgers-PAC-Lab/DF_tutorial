@@ -56,6 +56,7 @@ print(Df_B.index.names)
 Df_C=Df_B.swaplevel(0,1)
 
 ## Next up I want to talk about how to refer to data. .loc in particular is a pain if you don't know quite what it's doing.
+#Df.loc will try to locate data and parts of the df based on the index.
 
 ##SLICING BY ROWS:
 #In Df_A, whose only index is the autonumbering, .loc will only accept the row number as an argument and it will return the entire row as a series.
@@ -68,7 +69,7 @@ slice2 = Df_B.loc['F1_PAFT','Mon',0:1]
 
 #Note that you can only select more than one value for the lowest level.
 #Df_B.loc['F1_PAFT','Mon',0:1] is valid, but Df_B.loc['F1_PAFT':'M2_PAFT','Mon',0] is not.
-#For that, use python's slice function. Options are slice(start,end, step).
+#For that, use python's slice function. Options are slice(start value,end value, step).
 #To select everything, the syntax is slice(None)
 slice3 = Df_B.loc[(slice(None),'Mon',0),:]
 
@@ -103,9 +104,22 @@ DfB_xs = Df_B.xs('Tues',level=1)
 # That's df.transpose() or just df.T
 DfA_T = Df_A.transpose()
 DfB_T = Df_B.T
-#This is useful since
+#This is useful since some methods only work on the rows.
+
+#Stacking and unstacking fields is another way to reshape the df.
+# Stacking is moving stuff from the columns headers to the rows
+# Unstacking is moving stuff from the rows to be column headers
+#Both of these really only make sense with a MI, otherwise you can do it but it'll just make a big long series.
+print(Df_A.stack())
+#See? Not very useful.
+#Try unstacking first, since we don't have any dfs with multi-indexes on the columns yet.
+B_unstack_by_mouse = Df_B.unstack(['mouse'])
+B_unstack_by_mouse.swaplevel([0,1],axis=1)
+#B_unstack_by_mouse.sort()
+
 ## TODO: Ok now I can go over stacking and unstacking, and maybe pivoting if I feel ambitious
 #After that, I want to do adding and manipulating data from the columns.
 # Probably a section on apply(), then on iterrows()/itercolumns() and looping if I can figure that out
+#Also include .drop and .dropna()
 
 # After I've finished I want to put it in a Jupyter notebook and add some practice exercises like Chris has in the example plots.

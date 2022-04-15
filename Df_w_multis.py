@@ -82,6 +82,30 @@ Df_B_cols2=Df_B.loc[:,['rcp','speed']]
 #There are several ways of selecting specific values from a column. Nested criteria works the same on flat or hierarchical dfs:
 Df_A_slow = Df_A[Df_A['speed']=='Low']
 Df_B_slow = Df_B[Df_B['speed']=='Low']
+#You can also use df.query(), where you write out your query expression as a string.
+#Use inplace=True if you want to change the df, getting rid of the records that don't match your query.
+Df_A.query('mouse== "F2_PAFT" and speed != "Low"')
+Df_B.query('mouse== "F2_PAFT" and speed != "Low"')
+#Look at the documentation for Pandas df.query() and python expressions for more info on this.
 
-##TODO: Ok I think now is where I can talk about query, xs, where, and all that stuff.
-#Then I can go over stacking and unstacking.
+#To take a subset of the data WITHOUT the headers/labels, you can use df.xs()
+#The syntax is df.xs(value(s)) and in a MI df, df.xs(value,level=#)
+#You can only use values that are in an index, so Df_A can only search by the autonumbered index.
+DfA_xs = Df_A.xs(5)
+DfB_xs = Df_B.xs('Tues',level=1)
+# Be careful with xs and give any variables good descriptive names.
+# Since the headers are removed, a new df created with xs has no obvious way to know what your selection criteria was.
+
+##RESHAPING DATA
+
+#Ok now let's talk about reshaping and re-arranging data.
+# The easiest one is transposing the data: flipping what's on the columns vs the rows.
+# That's df.transpose() or just df.T
+DfA_T = Df_A.transpose()
+DfB_T = Df_B.T
+#This is useful since
+## TODO: Ok now I can go over stacking and unstacking, and maybe pivoting if I feel ambitious
+#After that, I want to do adding and manipulating data from the columns.
+# Probably a section on apply(), then on iterrows()/itercolumns() and looping if I can figure that out
+
+# After I've finished I want to put it in a Jupyter notebook and add some practice exercises like Chris has in the example plots.

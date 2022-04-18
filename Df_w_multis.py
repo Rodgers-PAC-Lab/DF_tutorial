@@ -64,14 +64,14 @@ print(Df_A.loc[5])
 
 #For a MI dataframe, you can use any of the indexes, but they have to be in order.
 slice1 = Df_B.loc['F1_PAFT']
-slice2 = Df_B.loc['F1_PAFT','Mon',0:1]
+slice2 = Df_B.loc['F1_PAFT','Mon',0]
 #What happens if you try them out of order? What if you skip a level? Try it in the console.
 
 #Note that you can only select more than one value for the lowest level.
 #Df_B.loc['F1_PAFT','Mon',0:1] is valid, but Df_B.loc['F1_PAFT':'M2_PAFT','Mon',0] is not.
 #For that, use python's slice function. Options are slice(start value,end value, step).
 #To select everything, the syntax is slice(None)
-slice3 = Df_B.loc[(slice(None),'Mon',0),:]
+slice3 = Df_B.loc[(slice(None),'Mon',[0,1,2]),:]
 
 ##SLICING BY COLUMNS:
 #Selecting an entire column is easy in either dataframe.
@@ -113,13 +113,30 @@ DfB_T = Df_B.T
 print(Df_A.stack())
 #See? Not very useful.
 #Try unstacking first, since we don't have any dfs with multi-indexes on the columns yet.
+#These lines will make a new df where the columns are also a multi-index, with mouse at the highest level.
+#The rows will be sorted by the trial number.
 B_unstack_by_mouse = Df_B.unstack(['mouse'])
-B_unstack_by_mouse.swaplevel([0,1],axis=1)
-#B_unstack_by_mouse.sort()
+B_unstack_by_mouse=B_unstack_by_mouse.swaplevel(0,1,axis=1)
+B_unstack_by_mouse = B_unstack_by_mouse.sort_index(axis=0,level=1)
 
-## TODO: Ok now I can go over stacking and unstacking, and maybe pivoting if I feel ambitious
-#After that, I want to do adding and manipulating data from the columns.
-# Probably a section on apply(), then on iterrows()/itercolumns() and looping if I can figure that out
-#Also include .drop and .dropna()
+# Now let's use df.stack() to make a df with a column for each mouse.
+# We're moving the rcp/speed/variance to the rows, which is level 1 of the columns' index.
+Stacked_by_mouse = B_unstack_by_mouse.stack(level=1)
+
+
+## TODO: I'll try pivoting later.
+
+## MANIPULATING DATA
+
+# You can add a column by setting it as a variable.
+Df_A['added']='New column'
+Df_B['added']='New column'
+
+#You can do basic operations with columns.
+Df_B['added'] = Df_B['rcp']-2
+
+# TODO: Now comes the stuff I really don't understand yet...
+#  a section on apply(), then on iterrows()/itercolumns() and looping if I can figure that out
+# Also include .drop and .dropna()
 
 # After I've finished I want to put it in a Jupyter notebook and add some practice exercises like Chris has in the example plots.
